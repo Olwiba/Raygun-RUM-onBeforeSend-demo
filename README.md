@@ -3,9 +3,13 @@
 This is a demonstration on how to use Rayguns `onBeforeSendRUM` hook.
 
 The implementation will store RUM events in session storage until the user logs in, once authenticated - it will pull session payloads from storage, modify the user with the authenticated user, then send these off to Raygun.
+
 ## How can I run it?
 
-Follow these steps:
+There is a live demo available here:  
+https://raygun-obs-demo.netlify.app/
+
+For local testing follow these steps:
 1. Clone the repo 
 2. Open the repo in terminal `cd Raygun-RUM-onBeforeSend-demo` 
 3. Edit `index.html` - Replace `dvdb8khopEiuj15r9fiHw` with your test API key 
