@@ -16,11 +16,11 @@ http://localhost:8080/ - if run via the python server
 file:///C:/[PATH_TO_WORKSPACE]/Raygun-RUM-onBeforeSend-demo/index.html - to run without a server
 
 ## How do I know it works?
-- Open the site in browser & open dev tools
-- Clicking the "trigger navigation" button will result in
+1. Open the site in browser & open dev tools
+2. Clicking the "trigger navigation" button will result in
 - - User details in console (anonymous)
 - - Session payloads stored under "Application > Session storage > eventData"
-- Click "Authenticate" & click "trigger navigation" again, this will result in
+3. Click "Authenticate" & click "trigger navigation" again, this will result in
 - - User details in console (authenticated)
 - - Session payloads are purged from Session storage
 - - Network requests have sent the correct payloads inside the "Network" tab
