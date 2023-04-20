@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" sizes="16x16" href="https://app.raygun.com/Content/Images/favicon-16x16.ico?v=3">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Add Raygun snippet -->
+  <script type="text/javascript">
+    !function(a,b,c,d,e,f,g,h){a.RaygunObject=e,a[e]=a[e]||function(){
+    (a[e].o=a[e].o||[]).push(arguments)},f=b.createElement(c),g=b.getElementsByTagName(c)[0],
+    f.async=1,f.src=d,g.parentNode.insertBefore(f,g),h=a.onerror,a.onerror=function(b,c,d,f,g){
+    h&&h(b,c,d,f,g),g||(g=new Error(b)),a[e].q=a[e].q||[],a[e].q.push({
+    e:g})}}(window,document,"script","http://cdn.raygun.io/raygun4js/raygun.min.js","rg4js");
+  </script>
+  <!-- Raygun settings -->
+  <script type="text/javascript">
+    rg4js('apiKey', 'ENTER_API_KEY');
+
+    rg4js('onBeforeSendRUM', function(payload){
+      console.log('User: ', payload.eventData[0].user);
+      const isAnonymous = payload.eventData[0].user.IsAnonymous;
+      const storedData = sessionStorage.getItem("eventData") ?? "[]";
+      const parsedData = JSON.parse(storedData) ?? [];
+
+      if (!isAnonymous) {
+        if (parsedData.length > 0) {
+          // Items found in session storage, send out
+          parsedData.map(function(storedPayload) {
+            storedPayload.eventData[0].user = payload.eventData[0].user;
+            fetch('https://api.raygun.io/events?apikey=ENTER_API_KEY', {
+              method: "POST",
+              body: JSON.stringify(storedPayload),
+              headers: {"Content-Type": "application/json",},
+            });
+          });
+
+          sessionStorage.removeItem("eventData");
+        }
+
+        return payload;
+      } else {
+        // Store the entire object in session storage
+        parsedData.push(payload);
+        sessionStorage.setItem("eventData", JSON.stringify(parsedData));
+        return false;
+      }
+    });
+
+    rg4js('enableCrashReporting', true);
+    rg4js('enablePulse', true);
+  </script>
+</head>
+<body>
+  <!-- Demo app markup -->
+  <div class="bg-white">
+    <div class="mx-auto max-w-7xl py-24 sm:px-6 sm:py-32 lg:px-8">
+      <div class="relative isolate overflow-hidden bg-gray-900 px-6 py-24 text-center shadow-2xl sm:rounded-3xl sm:px-16">
+        <h2 class="mx-auto max-w-2xl text-3xl font-bold tracking-tight text-white sm:text-4xl">Raygun onBeforeSend demo</h2>
+        <p class="mx-auto mt-6 max-w-xl text-lg leading-8 text-gray-300">Errors triggered before the user is unauthenticated will be stored in session storage until the user authenticates.</p>
+        <div class="mt-10 flex items-center justify-center gap-x-6">
+          <button onclick="triggerError();" class="rounded-md bg-red-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Trigger error</button>
+          <button onclick="triggerPageNav();" class="rounded-md bg-lime-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-lime-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Trigger navigation</button>
+          <button onclick="toggleAuth();" class="rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"><span id="auth-status">Authenticate</span></button>
+        </div>
+        <svg viewBox="0 0 1024 1024" class="absolute left-1/2 top-1/2 -z-10 h-[64rem] w-[64rem] -translate-x-1/2 [mask-image:radial-gradient(closest-side,white,transparent)]" aria-hidden="true">
+          <circle cx="512" cy="512" r="512" fill="url(#827591b1-ce8c-4110-b064-7cb85a0b1217)" fill-opacity="0.7" />
+          <defs>
+            <radialGradient id="827591b1-ce8c-4110-b064-7cb85a0b1217">
+              <stop stop-color="#3288cc" />
+              <stop offset="1" stop-color="#63b4f4" />
+            </radialGradient>
+          </defs>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Demo app logic -->
+  <script>
+    // Error
+    function triggerError() {
+      throw new Error('This is an error');
+    }
+
+    // Page navigation
+    function triggerPageNav() {
+      const pages = ['account', 'settings', 'dashboard']
+      rg4js('trackEvent', {
+        type: 'pageView',
+        path: `/${pages[Math.floor(Math.random() * 3)]}`
+      });
+    }
+
+    // Authentication
+    function toggleAuth() {
+      const authStatus = document.getElementById('auth-status');
+      if (authStatus.innerHTML === "Authenticate") {
+        // handle logIn
+        rg4js('setUser', {
+          identifier: '123456789',
+          isAnonymous: false,
+          email: 'test@user.com',
+          firstName: 'Test',
+          fullName: 'Test User'
+        });
+        authStatus.innerHTML = "Unauthenticate";
+      } else {
+        // handle logOut
+        rg4js('endSession');
+        rg4js('setUser', {
+          isAnonymous: true
+        });
+        authStatus.innerHTML = "Authenticate";
+      }
+    }
+  </script>
+</body>
+</html>
