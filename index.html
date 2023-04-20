@@ -16,7 +16,8 @@
   </script>
   <!-- Raygun settings -->
   <script type="text/javascript">
-    rg4js('apiKey', 'ENTER_API_KEY');
+    // Add your Raygun API key here
+    rg4js('apiKey', 'dvdb8khopEiuj15r9fiHw');
 
     rg4js('onBeforeSendRUM', function(payload){
       console.log('User: ', payload.eventData[0].user);
@@ -29,7 +30,8 @@
           // Items found in session storage, send out
           parsedData.map(function(storedPayload) {
             storedPayload.eventData[0].user = payload.eventData[0].user;
-            fetch('https://api.raygun.io/events?apikey=ENTER_API_KEY', {
+            // Add your Raygun API key here
+            fetch('https://api.raygun.io/events?apikey=dvdb8khopEiuj15r9fiHw', {
               method: "POST",
               body: JSON.stringify(storedPayload),
               headers: {"Content-Type": "application/json",},

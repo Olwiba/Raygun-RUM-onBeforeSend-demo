@@ -8,7 +8,7 @@ The implementation will store RUM events in session storage until the user logs 
 Follow these steps:
 1. Clone the repo 
 2. Open the repo in terminal `cd Raygun-RUM-onBeforeSend-demo` 
-3. Edit `index.html` - Replace `[ENTER_API_KEY]` with your test API key 
+3. Edit `index.html` - Replace `dvdb8khopEiuj15r9fiHw` with your test API key 
 4. (optional) Run a simple python server `python -m http.server 8080`
 5. Open the demo
 
