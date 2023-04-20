@@ -12,7 +12,7 @@ Follow these steps:
 4. (optional) Run a simple python server `python -m http.server 8080`
 5. Open the demo
 
-http://localhost:8080/ - if run via the python server
+http://localhost:8080/ - if run via the python server  
 file:///C:/[PATH_TO_WORKSPACE]/Raygun-RUM-onBeforeSend-demo/index.html - to run without a server
 
 ## How do I know it works?
